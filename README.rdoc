@@ -1,0 +1,24 @@
+= RealWeb
+
+Boot a rack app in a thread or process to use as a real test endpoint.
+
+=== Usage
+
+    before(:each) do
+      @server = RealWeb.start_server("path/to/config.ru")
+    end
+
+    after(:each) do
+      @server.stop
+    end
+
+    it "runs some action that would normally hit the api" do
+      MyLibrary.get_list_of_things(@server.base_uri)
+    end
+
+
+RealWeb.start_server boots the given config.ru in a thread. When you call stop on the server object, the server is killed.
+
+You can specifically use a Process.fork server with start_server_in_fork.
+
+RealWeb uses WEBrick for its pure ruby server. No extra dependencies or C extensions.
