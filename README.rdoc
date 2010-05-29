@@ -2,23 +2,46 @@
 
 Boot a rack app in a thread or process to use as a real test endpoint.
 
+=== Why?
+
+We found this very useful for gems that hit an API. Rather than mocking out all
+the URIs with FakeWeb, you can just write a sample rack app that looks like the
+API you're expecting. It's not uncommon to have 5+ different small rack apps
+that reflect different behaviors of your remote server. We created things like
+broken.ru that always responds with 500s, forbidden.ru that is always 403, and
+healthy.ru that always returns happy path responses.
+
+Another useful way to use this is with paired client/server libraries. We use
+RealWeb to boot up the real rack server and hit it with the client from within
+the specs.
+
 === Usage
 
-    before(:each) do
-      @server = RealWeb.start_server("path/to/config.ru")
+    # fixtures/config.ru
+    run lambda { |env| [200, { 'Content-Type' => 'application/json' }, '[{thing: 1}, {thing: 2}]'] }
+
+    # thing_api_spec.rb
+    describe MyLibrary do
+      before(:each) do
+        @server = RealWeb.start_server("fixtures/config.ru")
+      end
+
+      after(:each) do
+        @server.stop
+      end
+
+      it "runs an action that would normally hit the api" do
+        MyLibrary.get_list_of_things_from_api(@server.base_uri).should_not be_empty
+      end
     end
 
-    after(:each) do
-      @server.stop
-    end
 
-    it "runs some action that would normally hit the api" do
-      MyLibrary.get_list_of_things(@server.base_uri)
-    end
+RealWeb.start_server boots the given config.ru in a thread. When you call stop
+on the server object, the server is killed.
 
+The example uses an extremely simplistic rack app. We usually use Sinatra apps
+for RealWeb backends.
 
-RealWeb.start_server boots the given config.ru in a thread. When you call stop on the server object, the server is killed.
+=== Forking Server
 
 You can specifically use a Process.fork server with start_server_in_fork.
-
-RealWeb uses WEBrick for its pure ruby server. No extra dependencies or C extensions.
