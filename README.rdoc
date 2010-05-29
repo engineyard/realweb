@@ -1,8 +1,8 @@
 = RealWeb
 
-Boot a rack app in a thread or process to use as a real test endpoint.
+Boot a rack app to use as a real endpoint for tests.
 
-=== Why?
+== Why?
 
 We found this very useful for gems that hit an API. Rather than mocking out all
 the URIs with FakeWeb, you can just write a sample rack app that looks like the
@@ -15,7 +15,7 @@ Another useful way to use this is with paired client/server libraries. We use
 RealWeb to boot up the real rack server and hit it with the client from within
 the specs.
 
-=== Usage
+== Usage
 
     # fixtures/config.ru
     run lambda { |env| [200, { 'Content-Type' => 'application/json' }, '[{thing: 1}, {thing: 2}]'] }
@@ -42,6 +42,6 @@ on the server object, the server is killed.
 The example uses an extremely simplistic rack app. We usually use Sinatra apps
 for RealWeb backends.
 
-=== Forking Server
+== Forking Server
 
 You can specifically use a Process.fork server with start_server_in_fork.
