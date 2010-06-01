@@ -99,7 +99,6 @@ module RealWeb
           open(base_uri)
           return
         rescue Errno::ECONNREFUSED
-          puts "Connection refused; retrying..."
           sleep 0.5
         end
       end
