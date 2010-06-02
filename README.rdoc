@@ -36,12 +36,16 @@ the specs.
     end
 
 
-RealWeb.start_server boots the given config.ru in a thread. When you call stop
-on the server object, the server is killed.
+RealWeb.start_server boots the given config.ru in a fork. When you call stop
+on the server object, the server process is killed.
 
-The example uses an extremely simplistic rack app. We usually use Sinatra apps
-for RealWeb backends.
+The example above is an extremely simplistic rack app. We usually use Sinatra
+apps for RealWeb backends.
 
-== Forking Server
+== Threaded Server
 
-You can specifically use a Process.fork server with start_server_in_fork.
+You can specifically boot a server in a thread instead of a fork with
+start_server_in_thread. This can allow you to manipulate the state of the
+RealWeb server. Use at your own risk. This can lead to harder to
+comprehend tests. Actually reaching behind a "mock" api to change it's
+behavior during the test run is not ideal.
