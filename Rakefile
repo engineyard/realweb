@@ -4,7 +4,7 @@ Bundler.require(:default, :test)
 
 @spec = Gem::Specification.new do |s|
   s.name = "realweb"
-  s.version = "0.1.6"
+  s.version = "0.1.7.pre"
   s.summary = "Easily runs a rack app for tests that hit web APIs"
   s.description = s.summary
   s.has_rdoc = false
