@@ -16,12 +16,14 @@ module RealWeb
       end
     end
 
-    attr_reader :port
-
     def initialize(config_ru, pre_spawn_callback = nil, port_range = DEFAULT_PORT_RANGE)
       @config_ru, @pre_spawn_callback, @port_range = config_ru, pre_spawn_callback, port_range
       @running = false
       yield self if block_given?
+    end
+
+    def port
+      @port ||= find_port
     end
 
     def running?
@@ -30,7 +32,7 @@ module RealWeb
 
     def start
       return if running?
-      find_port
+      port
       run_pre_spawn
       spawn_server
       at_exit { stop }
@@ -47,16 +49,16 @@ module RealWeb
     end
 
     def base_uri
-      URI.parse("http://#{host}:#{@port}/")
+      URI.parse("http://#{host}:#{port}/")
     end
 
     protected
 
     def find_port
-      return if @port
       begin
-        @port = random_port
-      end while system("lsof -i tcp:#{@port} > /dev/null")
+        port = random_port
+      end while system("lsof -i tcp:#{port} > /dev/null")
+      port
     end
 
     def random_port
@@ -75,7 +77,7 @@ module RealWeb
     def boot_rack_server(&block)
       begin
         rack_server = Rack::Server.new(
-          :Port      => @port,
+          :Port      => port,
           :config    => @config_ru,
           :server    => 'webrick',
           :Logger    => Logger.new(StringIO.new), # quiet webrick

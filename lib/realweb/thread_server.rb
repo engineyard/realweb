@@ -1,7 +1,7 @@
 require 'realweb/server'
 
 module RealWeb
-  class InThreadServer < Server
+  class ThreadServer < Server
 
     def stop
       @thread[:kill_server].call

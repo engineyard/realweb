@@ -1,10 +1,10 @@
-require 'realweb/in_thread_server'
+require 'realweb/thread_server'
 require 'realweb/forking_server'
 
 module RealWeb
   class << self
     def start_server_in_thread(*args)
-      InThreadServer.new(*args) { |server| server.start }
+      ThreadServer.new(*args) { |server| server.start }
     end
 
     def start_server_in_fork(*args)
@@ -13,7 +13,7 @@ module RealWeb
     alias start_server start_server_in_fork
 
     def with_server_in_thread(*args, &block)
-      InThreadServer.with_rackup(*args, &block)
+      ThreadServer.with_rackup(*args, &block)
     end
 
     def with_server_in_fork(*args, &block)
