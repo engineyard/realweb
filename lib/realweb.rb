@@ -1,5 +1,7 @@
-require 'realweb/thread_server'
-require 'realweb/forking_server'
+require 'rack'
+require 'stringio'
+require 'logger'
+require 'open-uri'
 
 module RealWeb
   class << self
@@ -22,3 +24,7 @@ module RealWeb
     alias with_server with_server_in_fork
   end
 end
+
+require 'realweb/server'
+require 'realweb/thread_server'
+require 'realweb/forking_server'

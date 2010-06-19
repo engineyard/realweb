@@ -1,5 +1,3 @@
-require 'realweb/server'
-
 module RealWeb
   class ForkingServer < Server
 
@@ -22,11 +20,17 @@ module RealWeb
     end
 
     def spawn_server
-      @pid ||= Process.fork do
-        boot_rack_server do |mongrel_server|
-          trap(:TERM) { mongrel_server.stop; exit!(0) }
-        end
+      self.port
+
+      unless @pid = fork
+        process_as_child
       end
+    end
+
+    def process_as_child
+      trap(:TERM) { exit!(0) }
+      @server = rack_server
+      @server.start
     end
   end
 end
