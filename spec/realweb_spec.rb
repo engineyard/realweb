@@ -11,7 +11,6 @@ describe RealWeb do
       after { @server.stop }
 
       it "starts an accessible server" do
-        # Rack::Client.get(@server.base_uri).body.should == "Hello World"
         open(@server.base_uri).read.should == "Hello World"
       end
 
@@ -58,5 +57,16 @@ describe RealWeb do
     end
 
     it_should_behave_like "working server"
+  end
+
+  describe "Server" do
+    it "can access & determine an open port before boot" do
+      server = RealWeb::ForkingServer.new(config_ru)
+      port = server.port
+      server.start
+      server.port.should == port
+      server.stop
+      port.to_s.should =~ /^\d{4}$/
+    end
   end
 end
