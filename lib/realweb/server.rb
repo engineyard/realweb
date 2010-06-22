@@ -1,5 +1,4 @@
 require 'rack'
-require 'webrick'
 require 'stringio'
 require 'logger'
 require 'open-uri'
@@ -79,13 +78,11 @@ module RealWeb
         rack_server = Rack::Server.new(
           :Port      => port,
           :config    => @config_ru,
-          :server    => 'webrick',
-          :Logger    => Logger.new(StringIO.new), # quiet webrick
-          :AccessLog => [ StringIO.new, WEBrick::AccessLog::COMMON_LOG_FORMAT ]
+          :server    => 'mongrel'
         )
-        webrick_handler = rack_server.server
+        mongrel_handler = rack_server.server
         wrapped_app = rack_server.send(:wrapped_app)
-        webrick_handler.run(wrapped_app, rack_server.options, &block)
+        mongrel_handler.run(wrapped_app, rack_server.options, &block)
       rescue
         $stderr.puts "Failed to start server"
         $stderr.puts $!.inspect

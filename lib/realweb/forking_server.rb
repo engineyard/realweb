@@ -23,8 +23,8 @@ module RealWeb
 
     def spawn_server
       @pid ||= Process.fork do
-        boot_rack_server do |webrick_server|
-          trap(:TERM) { webrick_server.shutdown; exit!(0) }
+        boot_rack_server do |mongrel_server|
+          trap(:TERM) { mongrel_server.stop; exit!(0) }
         end
       end
     end

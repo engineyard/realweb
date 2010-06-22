@@ -13,8 +13,8 @@ module RealWeb
 
     def spawn_server
       @thread ||= Thread.new do
-        boot_rack_server do |webrick_server|
-          Thread.current[:kill_server] = lambda { webrick_server.shutdown }
+        boot_rack_server do |mongrel_server|
+          Thread.current[:kill_server] = lambda { mongrel_server.stop }
         end
       end
     end
