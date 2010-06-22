@@ -5,6 +5,10 @@ describe RealWeb do
     File.expand_path("../config.ru", __FILE__)
   end
 
+  def unauthorized_config_ru
+    File.expand_path("../unauthorized_config.ru", __FILE__)
+  end
+
   shared_examples_for "working server" do
     describe ".start_server" do
       before { @server = start_server }
@@ -60,13 +64,17 @@ describe RealWeb do
   end
 
   describe "Server" do
-    it "can access & determine an open port before boot" do
+    it "#find_port can be accessed & determined before boot" do
       server = RealWeb::ForkingServer.new(config_ru)
       port = server.port
       server.start
       server.port.should == port
       server.stop
       port.to_s.should =~ /^\d{4}$/
+    end
+
+    it "can boot non-200 code servers" do
+      RealWeb.start_server(unauthorized_config_ru).stop
     end
   end
 end
