@@ -64,7 +64,7 @@ describe RealWeb do
   end
 
   describe "Server" do
-    it "#find_port can be accessed & determined before boot" do
+    it "#port can be accessed & determined before boot" do
       server = RealWeb::ForkingServer.new(config_ru)
       port = server.port
       server.start
