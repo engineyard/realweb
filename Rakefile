@@ -30,7 +30,7 @@ require 'spec/rake/spectask'
 desc "Run unit specifications"
 Spec::Rake::SpecTask.new do |spec|
   spec.spec_opts << %w(-fs --color)
-  spec.spec_opts << '--loadby' << 'random' << "--debugger"
+  spec.spec_opts << '--loadby' << 'random'
   spec.libs << 'lib' << 'spec'
   spec.spec_files = FileList['spec/**/*_spec.rb']
 end
