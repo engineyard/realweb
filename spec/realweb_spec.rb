@@ -34,8 +34,8 @@ describe RealWeb do
         end
       end
 
-      it 'mongrel' do
-        with_server(:server => 'mongrel') do |server|
+      it 'thin' do
+        with_server(:server => 'thin') do |server|
           open(server.base_uri).read.should == "Hello World"
         end
       end

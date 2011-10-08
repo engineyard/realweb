@@ -22,7 +22,8 @@ module RealWeb
     def spawn_server
       self.port
 
-      unless @pid = fork
+      trap(:TERM) { kill_pid; exit!(0) }
+      @pid = fork do
         process_as_child
       end
     end
