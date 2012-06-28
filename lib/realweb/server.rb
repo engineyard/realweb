@@ -23,7 +23,6 @@ module RealWeb
       @host       = options.delete(:host)       || DEFAULT_HOST
 
       @pre_spawn_callback = options.delete(:pre_spawn_callback)
-
       @rack_options = options
 
       yield self if block_given?
