@@ -5,17 +5,17 @@ describe RealWeb::ForkingServer do
     File.expand_path("../config.ru", __FILE__)
   end
 
-  subject { described_class.new(config_ru) }
+  let(:server) { described_class.new(config_ru) }
 
   it "finds a port" do
-    subject.port.should_not be_nil
+    server.port.should_not be_nil
   end
 
   it "retains the same port after it's found one" do
-    subject.port.should == subject.port
+    server.port.should == server.port
   end
 
   it "is not running when newly created" do
-    subject.should_not be_running
+    server.should_not be_running
   end
 end
