@@ -87,12 +87,12 @@ module RealWeb
     def wait_for_server
       20.times do
         begin
+          sleep 0.1
           open(base_uri)
           return
         rescue OpenURI::HTTPError
           return
         rescue Errno::ECONNREFUSED => e
-          sleep 2
         end
       end
       abort "Unable to reach RealWeb server: Problem booting #{@config_ru}"
