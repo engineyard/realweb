@@ -30,8 +30,10 @@ module RealWeb
 
     def process_as_child
       trap(:TERM) { exit!(0) }
-      STDOUT.reopen '/dev/null', 'a'
-      STDERR.reopen '/dev/null', 'a'
+      unless @verbose
+        STDOUT.reopen '/dev/null', 'a'
+        STDERR.reopen '/dev/null', 'a'
+      end
       @server = rack_server
       @server.start
     end

@@ -21,6 +21,7 @@ module RealWeb
       @port_range = options.delete(:port_range) || DEFAULT_PORT_RANGE
       @logger     = options.delete(:logger)     || DEFAULT_LOGGER
       @host       = options.delete(:host)       || DEFAULT_HOST
+      @verbose    = options.delete(:verbose)    || false
 
       @pre_spawn_callback = options.delete(:pre_spawn_callback)
       @rack_options = options
