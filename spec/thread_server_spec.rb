@@ -1,10 +1,6 @@
 require 'spec_helper'
 
 describe RealWeb::ThreadServer do
-  def config_ru
-    File.expand_path("../config.ru", __FILE__)
-  end
-
   subject { described_class.new(config_ru) }
 
   it "finds a port" do

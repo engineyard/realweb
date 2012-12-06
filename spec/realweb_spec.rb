@@ -1,18 +1,6 @@
 require 'spec_helper'
 
 describe RealWeb do
-  def config_ru
-    File.expand_path("../config.ru", __FILE__)
-  end
-
-  def unauthorized_config_ru
-    File.expand_path("../unauthorized_config.ru", __FILE__)
-  end
-
-  def slow_config_ru
-    File.expand_path("../slow_config.ru", __FILE__)
-  end
-
   shared_examples_for "working server" do
     describe ".start_server" do
       before { @server = start_server }
