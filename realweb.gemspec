@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "realweb"
-  s.version = "1.0.0"
+  s.version = "1.0.1"
   s.summary = "Easily runs a rack app for tests that hit web APIs"
   s.description = s.summary
   s.has_rdoc = false
