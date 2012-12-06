@@ -1,3 +1,10 @@
+require 'rack'
+require 'timeout'
+require 'logger'
+require 'uri'
+require 'open-uri'
+require 'stringio'
+
 module RealWeb
   class Server
     attr_reader :host, :rack_server
@@ -5,6 +12,17 @@ module RealWeb
     DEFAULT_PORT_RANGE    = 8000..10000
     DEFAULT_HOST          = '127.0.0.1'
     DEFAULT_LOGGER        = Logger.new(StringIO.new)
+    DEFAULT_TIMEOUT       = 2 # seconds
+
+    # return true if available, false if still waiting
+    def self.server_ready?(server)
+      open(server.base_uri)
+      true
+    rescue OpenURI::HTTPError
+      true
+    rescue Errno::ECONNREFUSED => e
+      false
+    end
 
     def self.with_rackup(*args)
       new(*args) do |server|
@@ -14,6 +32,21 @@ module RealWeb
       end
     end
 
+    # Create a RealWeb::Server object, either a RealWeb::ForkingServer or
+    # a RealWeb::ThreadServer.
+    #
+    # :port_range - Range specifying acceptable tcp ports to boot on.
+    # :logger     - An instance of Logger.
+    # :host       - Alternative host. Default is 127.0.0.1.
+    # :verbose    - Print server logs and errors to stdout/err
+    # :timeout    - Timout in seconds to wait for the server to boot.
+    # :ready      - A Proc that returns true when the server is ready, or false
+    #     if it is not ready yet. This proc will be called every 100ms with the
+    #     server as an argument. If blank, an open-uri based check will be used.
+    # :pre_spawn_callback - a lambda to be called with the server object before
+    #     spawning the server.
+    #
+    # Any remaining options will be passed to Rack::Server on boot.
     def initialize(config_ru, options = {})
       @config_ru  = config_ru
       @running    = false
@@ -22,6 +55,8 @@ module RealWeb
       @logger     = options.delete(:logger)     || DEFAULT_LOGGER
       @host       = options.delete(:host)       || DEFAULT_HOST
       @verbose    = options.delete(:verbose)    || false
+      @timeout    = options.delete(:timeout)    || DEFAULT_TIMEOUT
+      @ready      = options.delete(:ready)      || self.class.method(:server_ready?)
 
       @pre_spawn_callback = options.delete(:pre_spawn_callback)
       @rack_options = options
@@ -85,17 +120,16 @@ module RealWeb
     end
 
     def wait_for_server
-      20.times do
+      Timeout.timeout(@timeout) do
         begin
           sleep 0.1
-          open(base_uri)
-          return
-        rescue OpenURI::HTTPError
-          return
-        rescue Errno::ECONNREFUSED => e
-        end
+        end until @ready.call(self)
       end
-      abort "Unable to reach RealWeb server: Problem booting #{@config_ru}"
+    rescue Timeout::Error
+      raise RealWeb::ServerUnreachable, <<-ERROR
+Unable to reach RealWeb server after #{@timeout}s: #{@config_ru}.#{@verbose || "\nBoot RealWeb with {verbose: true} to print errrors."}
+      ERROR
     end
+
   end
 end

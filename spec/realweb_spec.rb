@@ -9,6 +9,10 @@ describe RealWeb do
     File.expand_path("../unauthorized_config.ru", __FILE__)
   end
 
+  def slow_config_ru
+    File.expand_path("../slow_config.ru", __FILE__)
+  end
+
   shared_examples_for "working server" do
     describe ".start_server" do
       before { @server = start_server }
@@ -53,20 +57,9 @@ describe RealWeb do
 
     it_should_behave_like "working server"
 
-    describe ".with_server" do
-
-      it "cleans up the server block exit" do
-        pending "Rack handles/defines server stop and cleanup"
-      end
-    end
-
     describe ".start_server" do
       before { @server = start_server }
       after { @server.stop }
-
-      it "becomes inaccessible when stop is called" do
-        pending "Rack handles/defines server stop and cleanup"
-      end
     end
 
   end
@@ -114,6 +107,10 @@ describe RealWeb do
 
     it "can boot non-200 code servers" do
       RealWeb.start_server(unauthorized_config_ru).stop
+    end
+
+    it "accepts an alternate timeout" do
+      expect { RealWeb.start_server(slow_config_ru, :timeout => 0.1).stop }.to raise_error(RealWeb::ServerUnreachable)
     end
   end
 end

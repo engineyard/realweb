@@ -1,9 +1,10 @@
-require 'rack'
-require 'stringio'
-require 'logger'
-require 'open-uri'
+require 'realweb/server'
+require 'realweb/thread_server'
+require 'realweb/forking_server'
 
 module RealWeb
+  ServerUnreachable = Class.new(RuntimeError)
+
   class << self
     def start_server_in_thread(*args)
       ThreadServer.new(*args) { |server| server.start }
@@ -24,7 +25,3 @@ module RealWeb
     alias with_server with_server_in_fork
   end
 end
-
-require 'realweb/server'
-require 'realweb/thread_server'
-require 'realweb/forking_server'
