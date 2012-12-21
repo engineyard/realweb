@@ -9,11 +9,11 @@ Gem::Specification.new do |s|
   s.email = "cloud-engineering@engineyard.com"
   s.homepage = "http://github.com/engineyard/realweb"
 
-  s.add_runtime_dependency "rack", '>=1.1.0'
+  s.add_runtime_dependency "rack", '>=1.3.0'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~>2.0'
-  s.add_development_dependency 'thin'
+  s.add_development_dependency 'puma'
   s.add_development_dependency 'simplecov'
 
   s.require_path = 'lib'

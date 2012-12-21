@@ -7,3 +7,4 @@ rvm:
 branches:
   only:
     - master
+    - fixrbx

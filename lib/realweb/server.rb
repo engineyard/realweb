@@ -126,8 +126,9 @@ module RealWeb
         end until @ready.call(self)
       end
     rescue Timeout::Error
+      verbose_msg = @verbose ? "" : "\nBoot RealWeb with {verbose: true} to print errrors."
       raise RealWeb::ServerUnreachable, <<-ERROR
-Unable to reach RealWeb server after #{@timeout}s: #{@config_ru}.#{@verbose || "\nBoot RealWeb with {verbose: true} to print errrors."}
+Unable to reach RealWeb server after #{@timeout}s: #{@config_ru}.#{verbose_msg}
       ERROR
     end
 

@@ -26,8 +26,8 @@ describe RealWeb do
         end
       end
 
-      it 'thin' do
-        with_server(:server => 'thin') do |server|
+      it 'puma' do
+        with_server(:server => 'puma') do |server|
           open(server.base_uri).read.should == "Hello World"
         end
       end
@@ -35,12 +35,12 @@ describe RealWeb do
   end
 
   describe "InThreadServer" do
-    def start_server(*args)
-      RealWeb.start_server_in_thread(config_ru, *args)
+    def start_server(options={})
+      RealWeb.start_server_in_thread(config_ru, options.merge(:verbose => true))
     end
 
-    def with_server(*args, &block)
-      RealWeb.with_server_in_thread(config_ru, *args, &block)
+    def with_server(options={}, &block)
+      RealWeb.with_server_in_thread(config_ru, options.merge(:verbose => true), &block)
     end
 
     it_should_behave_like "working server"
@@ -53,12 +53,12 @@ describe RealWeb do
   end
 
   describe "ForkingServer" do
-    def start_server(*args)
-      RealWeb.start_server_in_fork(config_ru, *args)
+    def start_server(options={})
+      RealWeb.start_server_in_fork(config_ru, options.merge(:verbose => true))
     end
 
-    def with_server(*args, &block)
-      RealWeb.with_server_in_fork(config_ru, *args, &block)
+    def with_server(options={}, &block)
+      RealWeb.with_server_in_fork(config_ru, options.merge(:verbose => true), &block)
     end
 
     describe ".with_server" do
