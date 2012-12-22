@@ -26,8 +26,8 @@ describe RealWeb do
         end
       end
 
-      it 'thin' do
-        with_server(:server => 'thin') do |server|
+      it 'puma' do
+        with_server(:server => 'puma') do |server|
           open(server.base_uri).read.should == "Hello World"
         end
       end
