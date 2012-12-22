@@ -19,7 +19,7 @@ module RealWeb
       true
     rescue OpenURI::HTTPError
       true
-    rescue Errno::ECONNREFUSED => e
+    rescue Errno::ECONNREFUSED
       false
     end
 
