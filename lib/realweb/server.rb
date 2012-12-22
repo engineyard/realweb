@@ -78,6 +78,9 @@ module RealWeb
       spawn_server
       wait_for_server
       @running = true
+    rescue RealWeb::ServerUnreachable
+      stop
+      raise
     end
 
     def stop
