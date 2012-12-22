@@ -11,7 +11,6 @@ module RealWeb
 
     DEFAULT_PORT_RANGE    = 8000..10000
     DEFAULT_HOST          = '127.0.0.1'
-    DEFAULT_LOGGER        = Logger.new(StringIO.new)
     DEFAULT_TIMEOUT       = 2 # seconds
 
     # return true if available, false if still waiting
@@ -22,6 +21,12 @@ module RealWeb
       true
     rescue Errno::ECONNREFUSED => e
       false
+    end
+
+    def self.default_logger(verbose = false)
+      logger = Logger.new($stderr)
+      logger.level = Logger::FATAL unless verbose
+      logger
     end
 
     def self.with_rackup(*args)
@@ -38,7 +43,7 @@ module RealWeb
     # :port_range - Range specifying acceptable tcp ports to boot on.
     # :logger     - An instance of Logger.
     # :host       - Alternative host. Default is 127.0.0.1.
-    # :verbose    - Print server logs and errors to stdout/err
+    # :verbose    - Print server logs and errors
     # :timeout    - Timout in seconds to wait for the server to boot.
     # :ready      - A Proc that returns true when the server is ready, or false
     #     if it is not ready yet. This proc will be called every 100ms with the
@@ -52,11 +57,11 @@ module RealWeb
       @running    = false
 
       @port_range = options.delete(:port_range) || DEFAULT_PORT_RANGE
-      @logger     = options.delete(:logger)     || DEFAULT_LOGGER
       @host       = options.delete(:host)       || DEFAULT_HOST
       @verbose    = options.delete(:verbose)    || false
       @timeout    = options.delete(:timeout)    || DEFAULT_TIMEOUT
       @ready      = options.delete(:ready)      || self.class.method(:server_ready?)
+      @logger     = options.delete(:logger)     || self.class.default_logger(@verbose)
 
       @pre_spawn_callback = options.delete(:pre_spawn_callback)
       @rack_options = options
@@ -117,8 +122,7 @@ module RealWeb
         :Port       => port,
         :Host       => host,
         :config     => @config_ru,
-        :Logger     => @logger,
-        :AccessLog  => @access_log
+        :Logger     => @logger
       ))
     end
 

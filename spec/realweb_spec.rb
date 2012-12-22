@@ -35,12 +35,12 @@ describe RealWeb do
   end
 
   describe "InThreadServer" do
-    def start_server(*args)
-      RealWeb.start_server_in_thread(config_ru, *args)
+    def start_server(options={})
+      RealWeb.start_server_in_thread(config_ru, options.merge(:verbose => debug?))
     end
 
-    def with_server(*args, &block)
-      RealWeb.with_server_in_thread(config_ru, *args, &block)
+    def with_server(options={}, &block)
+      RealWeb.with_server_in_thread(config_ru, options.merge(:verbose => debug?), &block)
     end
 
     it_should_behave_like "working server"
@@ -53,16 +53,17 @@ describe RealWeb do
   end
 
   describe "ForkingServer" do
-    def start_server(*args)
-      RealWeb.start_server_in_fork(config_ru, *args)
+    def start_server(options={})
+      RealWeb.start_server_in_fork(config_ru, options.merge(:verbose => debug?))
     end
 
-    def with_server(*args, &block)
-      RealWeb.with_server_in_fork(config_ru, *args, &block)
+    def with_server(options={}, &block)
+      RealWeb.with_server_in_fork(config_ru, options.merge(:verbose => debug?), &block)
     end
+
+    it_should_behave_like "working server"
 
     describe ".with_server" do
-
       it "cleans up the server block exit" do
         base_uri = nil
         with_server { |server| base_uri = server.base_uri }
@@ -79,8 +80,6 @@ describe RealWeb do
         lambda { open(@server.base_uri) }.should raise_error(Errno::ECONNREFUSED)
       end
     end
-
-    it_should_behave_like "working server"
   end
 
   describe "Server" do

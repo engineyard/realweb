@@ -24,6 +24,10 @@ module FixtureHelpers
   def slow_config_ru
     File.join(fixtures_root, "slow_config.ru")
   end
+
+  def debug?
+    ENV['DEBUG']
+  end
 end
 
 RSpec.configure do |config|
