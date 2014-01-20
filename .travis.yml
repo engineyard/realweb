@@ -4,6 +4,8 @@ rvm:
   - 1.9.3
   - rbx
   - ree
+env:
+  - DEBUG=1
 branches:
   only:
     - master
