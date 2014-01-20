@@ -25,6 +25,10 @@ module FixtureHelpers
     File.join(fixtures_root, "slow_config.ru")
   end
 
+  def redirecting_config_ru
+    File.join(fixtures_root, "redirecting_config.ru")
+  end
+
   def debug?
     ENV['DEBUG']
   end

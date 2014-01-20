@@ -82,6 +82,23 @@ describe RealWeb do
     end
   end
 
+  describe "RedirectingServer" do
+    def start_server(options={})
+      RealWeb.start_server(redirecting_config_ru, options.merge(:verbose => debug?))
+    end
+
+    def with_server(options={}, &block)
+      RealWeb.with_server(redirecting_config_ru, options.merge(:verbose => debug?), &block)
+    end
+
+    it_should_behave_like "working server"
+
+    describe ".start_server" do
+      before { @server = start_server }
+      after { @server.stop }
+    end
+  end
+
   describe "Server" do
     it "#port can be accessed & determined before boot" do
       server = RealWeb::ForkingServer.new(config_ru)
