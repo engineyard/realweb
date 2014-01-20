@@ -15,7 +15,7 @@ module RealWeb
 
     # return true if available, false if still waiting
     def self.server_ready?(server)
-      http = Net::HTTP.start(server.host, server.port, {open_timeout: DEFAULT_TIMEOUT, read_timeout: DEFAULT_TIMEOUT})
+      http = Net::HTTP.start(server.host, server.port, {:open_timeout => DEFAULT_TIMEOUT, :read_timeout => DEFAULT_TIMEOUT})
       response = http.head("/")
       true
     rescue Timeout::Error, SocketError, Errno::ECONNREFUSED
